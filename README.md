@@ -1,1 +1,1 @@
-# MacroBoard
+First version of a macro board with 16 keys, 2 rotary encoders and 4 LEDs.
