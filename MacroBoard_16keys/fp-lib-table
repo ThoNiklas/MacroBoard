@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name "Arduino Micro Pro")(type "KiCad")(uri "C:/Users/nikla/GitHub/MacroBoard/ProMicroKiCad-master/ProMicroKiCad-master/promicro.pretty")(options "")(descr ""))
+)
