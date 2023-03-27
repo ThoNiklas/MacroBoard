@@ -117,7 +117,6 @@ void doClick(char key) {
     switch(key) {
       case '0':
         Serial.println("0 MODE: 0");
-        shortCut(key);
         break;
       case '1':
         Serial.println("1 MODE: 0");
@@ -197,12 +196,8 @@ void doClick(char key) {
   }
   if (key == 'X') {
     Serial.println("X");
-      if (LEDMODE == 1) {
-        setLight(black);
-      } else if (LEDMODE == 0) {
-        setLight(ledColor);
-      }
-      LEDMODE = (LEDMODE + 1) % 2;
+    LEDMODE = ( LEDMODE + 1 ) % 2;
+    setLight(ledColor);
   }
   else if (key == 'Y') {
     MODE = (MODE + 1) % 2;
@@ -221,7 +216,13 @@ void doClick(char key) {
 
 void setLight(Color color) {
   char valueRed, valueGreen, valueBlue;
-  switch (color) {
+  if (LEDMODE == 0) {
+    digitalWrite(LEDRED, LOW);
+    digitalWrite(LEDGREEN, LOW);
+    digitalWrite(LEDBLUE, LOW);
+    return;
+  }
+  switch (color) { 
     case red:
       digitalWrite(LEDRED, HIGH);
       digitalWrite(LEDGREEN, LOW);
