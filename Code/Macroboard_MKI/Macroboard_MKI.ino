@@ -1,14 +1,19 @@
 #include <Keypad.h>
 #include <Keyboard.h>
 
+char MODE = 0;
+char LEDMODE = 1;
+enum Color { red, green, blue, black };
+Color ledColor = blue;
+
 //Keypad
 const byte ROWS = 4;
 const byte COLS = 4;
 
 char hexaKeys[ROWS][COLS] = {
-  {'0','1','2','3'},
-  {'4','5','6','7'},
-  {'8','9','A','B'}
+  {'3','2','1','0'},
+  {'7','6','5','4'},
+  {'B','A','9','8'}
 };
 
 byte rowPins[ROWS] = {8,7,6};
@@ -20,17 +25,17 @@ Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS)
 int state1, lastState1;
 int state2, lastState2;
 int counter1 = 0, counter2 = 0;
-#define ROTARYPIN1A 16
-#define ROTARYPIN1B 10
-#define ROTARYPIN2A 15
-#define ROTARYPIN2B 14
+#define ROTARYPIN1A 10
+#define ROTARYPIN1B 16
+#define ROTARYPIN2A 14
+#define ROTARYPIN2B 15
 #define ROTARYCLICKPIN1 9
 #define ROTARYCLICKPIN2 A0
 
 // LED
-#define LEDBLUE A3
-#define LEDGREEN A2
-#define LEDRED A1 
+#define LEDBLUE A1
+#define LEDGREEN A3
+#define LEDRED A2 
 char valueBlue = 255;
 char valueRed = 0;
 char valueGreen = 0;
@@ -53,7 +58,7 @@ void setup() {
   pinMode(LEDBLUE, OUTPUT);
   pinMode(LEDGREEN, OUTPUT);
   pinMode(LEDBLUE, OUTPUT);
-  setLight(valueRed, valueGreen,valueBlue,100);
+  setLight(ledColor);
 }
 
 void loop() {
@@ -61,9 +66,11 @@ void loop() {
   
   if (!digitalRead(ROTARYCLICKPIN1)) {
     doClick('X');
+    delay(500);
   }
   if (!digitalRead(ROTARYCLICKPIN2)) {
     doClick('Y');
+    delay(500);
   }
 
   char key = customKeypad.getKey();
@@ -106,57 +113,136 @@ void rotaryUpdate() {
 }
 
 void doClick(char key) {
-  switch(key) {
-    case '0':
-      Serial.println("0");
-      shortCut(key);
-      break;
-    case '1':
-      Serial.println("1");
-      break;
-    case '2':
-      Serial.println("2");
-      break;
-    case '3':
-      Serial.println("3");
-      break;
-    case '4':
-      Serial.println("4");
-      break;
-    case '5':
-      Serial.println("5");
-      break;
-    case '6':
-      Serial.println("6");
-      break;
-    case '7':
-      Serial.println("7");
-      break;
-    case '8':
-      Serial.println("8");
-      break;
-    case '9':
-      Serial.println("9");
-      break;
-    case 'A':
-      Serial.println("A");
-      break;
-    case 'B':
-      Serial.println("B");
-      break;
-    case 'X':
-      Serial.println("X");
-      break;
-    case 'Y':
-      Serial.println("Y");
-      break;
+  if (MODE == 0) {
+    switch(key) {
+      case '0':
+        Serial.println("0 MODE: 0");
+        shortCut(key);
+        break;
+      case '1':
+        Serial.println("1 MODE: 0");
+        break;
+      case '2':
+        Serial.println("2 MODE: 0");
+        break;
+      case '3':
+        Serial.println("3 MODE: 0");
+        break;
+      case '4':
+        Serial.println("4 MODE: 0");
+        break;
+      case '5':
+        Serial.println("5 MODE: 0");
+        break;
+      case '6':
+        Serial.println("6 MODE: 0");
+        break;
+      case '7':
+        Serial.println("7 MODE: 0");
+        break;
+      case '8':
+        Serial.println("8 MODE: 0");
+        break;
+      case '9':
+        Serial.println("9 MODE: 0");
+        break;
+      case 'A':
+        Serial.println("A MODE: 0");
+        break;
+      case 'B':
+        Serial.println("B MODE: 0");
+        break;
+    }
+  }
+  else if (MODE == 1) {
+    switch(key) {
+      case '0':
+        Serial.println("0 MODE: 1");
+        shortCut(key);
+        break;
+      case '1':
+        Serial.println("1 MODE: 1");
+        break;
+      case '2':
+        Serial.println("2 MODE: 1");
+        break;
+      case '3':
+        Serial.println("3 MODE: 1");
+        break;
+      case '4':
+        Serial.println("4 MODE: 1");
+        break;
+      case '5':
+        Serial.println("5 MODE: 1");
+        break;
+      case '6':
+        Serial.println("6 MODE: 1");
+        break;
+      case '7':
+        Serial.println("7 MODE: 1");
+        break;
+      case '8':
+        Serial.println("8 MODE: 1");
+        break;
+      case '9':
+        Serial.println("9 MODE: 1");
+        break;
+      case 'A':
+        Serial.println("A MODE: 1");
+        break;
+      case 'B':
+        Serial.println("B MODE: 1");
+        break;
+    }
+  }
+  if (key == 'X') {
+    Serial.println("X");
+      if (LEDMODE == 1) {
+        setLight(black);
+      } else if (LEDMODE == 0) {
+        setLight(ledColor);
+      }
+      LEDMODE = (LEDMODE + 1) % 2;
+  }
+  else if (key == 'Y') {
+    MODE = (MODE + 1) % 2;
+    Serial.print("Mode switched to: ");
+    Serial.println(int(MODE));
+    if (MODE == 0) {
+      ledColor = blue;
+      setLight(ledColor);
+    }
+    else if (MODE == 1) {
+      ledColor = green;
+      setLight(ledColor);
+    }
   }
 }
 
-void setLight(char red, char green, char blue, char brightness) {
-  analogWrite(LEDRED, red * brightness / 255.0);
-  analogWrite(LEDGREEN, green * brightness /255.0);
-  analogWrite(LEDBLUE, blue * brightness / 255.0);
+void setLight(Color color) {
+  char valueRed, valueGreen, valueBlue;
+  switch (color) {
+    case red:
+      digitalWrite(LEDRED, HIGH);
+      digitalWrite(LEDGREEN, LOW);
+      digitalWrite(LEDBLUE, LOW);
+      break;
+    case green:
+      digitalWrite(LEDRED, LOW);
+      digitalWrite(LEDGREEN, HIGH);
+      digitalWrite(LEDBLUE, LOW);
+      break;
+    case blue:
+      digitalWrite(LEDRED, LOW);
+      digitalWrite(LEDGREEN, LOW);
+      digitalWrite(LEDBLUE, HIGH);
+      break;
+    case black:
+      digitalWrite(LEDRED, LOW);
+      digitalWrite(LEDGREEN, LOW);
+      digitalWrite(LEDBLUE, LOW);
+      break;
+  }
 }
 
 void shortCut(char key) {
