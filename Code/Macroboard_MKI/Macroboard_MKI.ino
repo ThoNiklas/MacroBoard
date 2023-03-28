@@ -157,7 +157,6 @@ void doClick(char key) {
     switch(key) {
       case '0':
         Serial.println("0 MODE: 1");
-        shortCut(key);
         break;
       case '1':
         Serial.println("1 MODE: 1");
